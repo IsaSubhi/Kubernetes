@@ -1,0 +1,9 @@
+kubectl expose deployment nginx-web --type=NodePort --port=80
+#  sets service with port 80 and IP type NodePort
+
+kubectl get services
+kubectl describe service nginx-web
+#  checks the status of the service
+
+curl http://IP-address
+#  check if nginx page is reachable

@@ -1,0 +1,37 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-deployment
+  labels:
+    app : {{ .Release.Name }}-deployment
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      project: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        project: {{ .Release.Name }}   # Service will look for those PODS Labels!!!
+    spec:
+      containers:
+        - name : {{ .Release.Name }}-web
+          image: {{ .Values.container.image }}
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-service
+  labels:
+    env  : test
+spec:
+  selector:
+    project: {{ .Release.Name }}    # Selecting PODS with those Labels
+  ports:
+    - name      : {{ .Release.Name }}-listener
+      protocol  : TCP
+      port      : 80  # Port on SVC
+      targetPort: 80  # Port on POD
+  type: ClusterIP
